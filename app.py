@@ -1,72 +1,94 @@
 import streamlit as st
-import os
 import faiss
-import numpy as np
+import pickle
 from sentence_transformers import SentenceTransformer
+import numpy as np
 
-# ----------- Load Model and Data -----------
-MODEL = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
+# ------------------------------
+#  PAGE CONFIG
+# ------------------------------
+st.set_page_config(
+    page_title="GIS RAG Search Engine",
+    page_icon="🌍",
+    layout="wide"
+)
 
-SCRAPED_DIR = "data/scraped"
+st.markdown("""
+    <h1 style='text-align: center; color:#00c2ff;'>🌍 GIS Knowledge RAG Search Engine</h1>
+    <p style='text-align:center; font-size:18px;'>Ask any GIS question. Answers come from your scraped documents.</p>
+""", unsafe_allow_html=True)
 
-DOCUMENTS = []
-EMBEDDINGS = None
-INDEX = None
+# ------------------------------
+#  LOAD EMBEDDING MODEL
+# ------------------------------
+@st.cache_resource
+def get_model():
+    return SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
 
-def load_documents():
-    global DOCUMENTS, EMBEDDINGS, INDEX
+MODEL = get_model()
 
-    texts = []
+# ------------------------------
+#  LOAD VECTOR INDEX + DOCUMENTS
+# ------------------------------
+def load_index():
+    try:
+        st.session_state.index = faiss.read_index("vector.index")
+        st.session_state.documents = pickle.load(open("documents.pkl", "rb"))
+        st.session_state.loaded = True
+        st.success("Vector Index Loaded Successfully!")
+    except Exception as e:
+        st.error(f"Failed to load vector index: {e}")
 
-    for file in os.listdir(SCRAPED_DIR):
-        if file.endswith(".txt"):
-            path = os.path.join(SCRAPED_DIR, file)
-            if os.path.getsize(path) < 100:
-                continue
-            with open(path, "r", encoding="utf-8") as f:
-                texts.append(f.read())
+# Load button
+if st.button("Load Vector Index"):
+    load_index()
 
-    # Chunk into paragraphs
-    DOCUMENTS = []
-    for text in texts:
-        for chunk in text.split("\n\n"):
-            if len(chunk.strip()) > 60:
-                DOCUMENTS.append(chunk.strip())
+st.write("---")
 
-    # Encode
-    EMBEDDINGS = MODEL.encode(DOCUMENTS, convert_to_numpy=True)
+# ------------------------------
+#  SEARCH FUNCTION
+# ------------------------------
+def search_query(query, top_k=3):
+    if "loaded" not in st.session_state or not st.session_state.loaded:
+        st.error("Please click 'Load Vector Index' first.")
+        return []
 
-    dim = EMBEDDINGS.shape[1]
-    INDEX = faiss.IndexFlatL2(dim)
-    INDEX.add(EMBEDDINGS)
+    index = st.session_state.index
+    docs = st.session_state.documents
 
-# ----------- Query Function -----------
-def retrieve(query, top_k=3):
-    q_embed = MODEL.encode([query], convert_to_numpy=True)
-    D, I = INDEX.search(q_embed, top_k)
-    results = [(DOCUMENTS[idx], D[0][n]) for n, idx in enumerate(I[0])]
+    q_emb = MODEL.encode([query], convert_to_numpy=True)
+
+    distances, indices = index.search(q_emb, top_k)
+
+    results = []
+    for dist, idx in zip(distances[0], indices[0]):
+        if idx < len(docs):
+            results.append((docs[idx], dist))
     return results
 
-# ----------- Streamlit UI -----------
-st.set_page_config(page_title="GIS RAG Search", layout="wide")
-st.title("🌍 GIS Knowledge RAG Search Engine")
-
-st.write("Ask any GIS question. Results come from your scraped documents.")
-
-if st.button("Load Vector Index"):
-    load_documents()
-    st.success("Documents & FAISS Index Loaded!")
-
-query = st.text_input("Enter your GIS question:")
+# ------------------------------
+#  USER INPUT
+# ------------------------------
+query = st.text_input("Enter your GIS question:", "")
 
 if st.button("Search"):
-    if INDEX is None:
-        st.error("Please click 'Load Vector Index' first.")
+    if not query.strip():
+        st.warning("Please enter a valid query.")
     else:
-        st.write("---")
-        results = retrieve(query)
-        st.subheader("🔎 Results")
-        for text, score in results:
-            st.write(f"**Score:** {score}")
-            st.write(text)
-            st.write("---")
+        results = search_query(query)
+        
+        if results:
+            st.write("### 🔎 Top Results:")
+            for i, (text, score) in enumerate(results, start=1):
+                st.markdown(f"#### Result {i} — Score: {score:.4f}")
+                st.write(text)
+                st.write("---")
+        else:
+            st.error("No matching documents found.")
+
+# Footer
+st.markdown("""
+    <p style='text-align:center; font-size:14px; color:gray;'>
+    GIS Knowledge RAG Engine — Powered by FAISS + MiniLM Embeddings
+    </p>
+""", unsafe_allow_html=True)
