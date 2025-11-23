@@ -1,0 +1,264 @@
+ï»¿
+Overview and Terminology > Common Measures and Notation > Notation
+Notation
+<<
+Click to Display Table of Contents
+>>
+Navigation:
+Overview and Terminology
+>
+Common Measures and Notation
+>
+Notation
+Table 1â2 Notation and symbology
+[
+a,b
+]
+A closed interval of the Real line, for example [0,1] means the set of all values between 0 and 1, including 0 and 1
+(
+a,b
+)
+An open interval of the Real line, for example (0,1) means the set of all values between 0 and 1, NOT including 0 and 1. This should not be confused with the notation for coordinate pairs, (
+x,y
+), or its use within bivariate functions such as f(
+x,y
+), or in connection with graph edges (see below) â the meaning should be clear from the context
+(
+i,j
+)
+In the context of graph theory, which forms the basis for network analysis, this pairwise notation is often used to define an edge connecting the two vertices
+i
+and
+j
+(
+x,y
+)
+A (spatial) data pair, usually representing a pair of coordinates in two dimensions. Terrestrial coordinates are typically Cartesian (i.e. in the plane, or
+planar
+) based on a pre-specified projection of the sphere, or Spherical (latitude, longitude). Spherical coordinates are often quoted in positive or negative degrees from the Equator and the Greenwich meridian, so may have the ranges [â90,+90] for latitude (north-south measurement) and [â180,180] for longitude (east-west measurement)
+(
+x,y,z
+)
+A (spatial) data triple, usually representing a pair of coordinates in two dimensions, plus a third coordinate (usually height or depth) or an attribute value, such as soil type or household income
+{
+x
+i
+}
+A
+set
+of
+n
+values
+x
+1
+,
+x
+2
+,
+x
+3
+, â¦
+x
+n
+, typically continuous ratio-scaled variables in the range (ââ,â) or [0,â). The values may represent measurements or attributes of distinct objects, or values that represent a collection of objects (for example the population of a census tract)
+{
+X
+i
+}
+A ordered set of
+n
+values
+x
+1
+,
+x
+2
+,
+x
+3
+, â¦
+x
+n
+, such that
+x
+i
+is less than or equal to
+x
+i+1
+for all i
+X,x
+The use of bold symbols in expressions indicates matrices (upper case) and vectors (lower case)
+{
+f
+i
+}
+A set of
+k
+frequencies (
+k<=n
+), derived from a dataset {
+x
+i
+}. If {
+x
+i
+} contains discrete values, some of which occur multiple times, then {
+f
+i
+} represents the number of occurrences or the
+count
+of each distinct value. {
+f
+i
+} may also represent the number of occurrences of values that lie in a range or set of ranges, {
+r
+i
+}. If a dataset contains
+n
+values, then the sum â
+f
+i
+=
+n
+. The set {
+f
+i
+} can also be written
+f
+(
+x
+i
+). If {
+f
+i
+} is regarded as a set of weights (for example attribute values) associated with the {
+x
+i
+}, it may be written as the set {
+w
+i
+} or
+w
+(
+x
+i
+)
+{
+p
+i
+}
+A set of
+k
+probabilities (
+k<=n
+), estimated from a dataset or theoretically derived. With a finite set of values {
+x
+i
+},
+p
+i
+=f
+i
+/n
+. If {
+x
+i
+} represents a set of
+k
+classes or ranges then
+p
+i
+is the probability of finding an occurrence in the
+i
+th
+class or range, i.e. the proportion of events or values occurring in that class or range. The sum â
+p
+i
+=1. If a set of frequencies, {
+f
+i
+}, have been standardized by dividing each value
+f
+i
+by their sum, â
+f
+i
+, then {
+p
+i
+} is equivalent to {
+f
+i
+}
+Σ
+Summation symbol, e.g.
+x
+1
++x
+2
++x
+3
++
+â¦
++x
+n
+. If no limits are shown the sum is assumed to apply to all subsequent elements, otherwise upper and/or lower limits for summation are provided
+Π
+Product symbol, e.g.
+x
+1
+âx
+2
+âx
+3
+â
+â¦
+âx
+n
+. If no limits are shown the product is assumed to apply to all subsequent elements, otherwise upper and/or lower limits for multiplication are provided
+^
+Used here in conjunction with Greek symbols (directly above) to indicate a value is an estimate of the true population value. Sometimes referred to as âhatâ
+~
+Is distributed as, for example
+y
+~N(0,1) means the variable
+y
+has a distribution that is Normal with a mean of 0 and standard deviation of 1
+!
+Factorial symbol.
+z=x
+! means
+z=x
+(
+x
+â1)(
+x
+â2)â¦1
+. x
+>=0. Usually applied to integer values of
+x
+. May be defined for fractional values of
+x
+using the Gamma function (
+Table 1â3
+)
+≡
+âEquivalent toâ symbol
+≈
+âApproximately equal toâ symbol
+⋲
+âBelongs toâ symbol, e.g.
+x
+⋲
+[0,2] means that
+x
+belongs to/is drawn from the set of all values in the closed interval [0,2];
+x
+⋲
+{0,1} means that
+x
+can take the values 0 and 1
+≤
+Less than or equal to, represented in the text where necessary by <= (provided in this form to support display by some web browsers)
+≥
+Greater than or equal to, represented in the text where necessary by >= (provided in this form to support display by some web browsers)
